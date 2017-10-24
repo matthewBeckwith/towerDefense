@@ -1,0 +1,29 @@
+{
+  "name": "towerdefense",
+  "version": "1.0.0",
+  "description": "this is an idea",
+  "main": "server.js",
+  "scripts": {
+    "test": "nodemon"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/matthewBeckwith/towerDefense.git"
+  },
+  "keywords": [
+    "tower",
+    "defense",
+    "game",
+    "html",
+    "nodejs"
+  ],
+  "author": "matthewBeckwith",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/matthewBeckwith/towerDefense/issues"
+  },
+  "homepage": "https://github.com/matthewBeckwith/towerDefense#readme",
+  "dependencies": {
+    "express": "^4.16.2"
+  }
+}
