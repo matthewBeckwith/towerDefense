@@ -74,32 +74,35 @@
 
       var lastPos;
 
-      for(var i = 0; i < newLevel.length; i++){
-        var temp = Math.floor(Math.random() * newLevel.length);
-        if(temp == 0 || temp == newLevel.length - 1){
-          i--;
-        }else{
-          if(i == 0 || i == newLevel.length - 1){
-            lastPos = temp;
-            newLevel[i][temp] = 1;
-          }else{
-            if(i % 2 == 1){
-              newLevel[i][lastPos] = 1;
-            }else{
-              for(col in newLevel[i]){
-                if(col >= lastPos && col <= temp){
-                  newLevel[i][col] = 1;
-                  lastPos = col;
-                }
-                if(col <= lastPos && col >= temp){
-                  newLevel[i][col] = 1;
-                  lastPos = temp;
-                }
-              }
-            }
-          }
-        }
-      }
+      // --> The below commented works with irregularities, trying something
+      //      else to become regular.
+
+      // for(var i = 0; i < newLevel.length; i++){
+      //   var temp = Math.floor(Math.random() * newLevel.length);
+      //   if(temp == 0 || temp == newLevel.length - 1){
+      //     i--;
+      //   }else{
+      //     if(i == 0 || i == newLevel.length - 1){
+      //       lastPos = temp;
+      //       newLevel[i][temp] = 1;
+      //     }else{
+      //       if(i % 2 == 1){
+      //         newLevel[i][lastPos] = 1;
+      //       }else{
+      //         for(col in newLevel[i]){
+      //           if(col >= lastPos && col <= temp){
+      //             newLevel[i][col] = 1;
+      //             lastPos = col;
+      //           }
+      //           if(col <= lastPos && col >= temp){
+      //             newLevel[i][col] = 1;
+      //             lastPos = temp;
+      //           }
+      //         }
+      //       }
+      //     }
+      //   }
+      // }
 
       return newLevel;
     }
