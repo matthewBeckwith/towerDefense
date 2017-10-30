@@ -6,13 +6,26 @@ var EMPTYSPACE_COLOR = "#000";
 var PATHSPACE_COLOR = "#b29c52";
 var FPS = 1000/30;
 
-var difficulty = 25;
+var difficulty = 20;
 
 var boxsize = canvas.width / difficulty;
 
 var level = initLevel(difficulty);
 
 var timer = window.setInterval(draw,FPS);
+
+function getClick(event){
+  var mouseX = Math.floor(event.offsetX / boxsize);
+  var mouseY = Math.floor(event.offsetY / boxsize);
+
+  if(level[mouseY][mouseX] == 2){
+    console.log("Towerspace!");
+  }else if(level[mouseY][mouseX] == 1){
+    console.log("Path!");
+  }else{
+    console.log("Nope");
+  }
+}
 
 function draw(){
   ctx.clearRect(0,0,canvas.height,canvas.width);
