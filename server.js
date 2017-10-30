@@ -1,9 +1,10 @@
 var express = require('express');
+var path = require('path');
 
 var app = express();
+var __dirname = './Public';
 
-app.use(express.static('/Public'));
-var __dirname = './Public'
+app.use(express.static(path.join(__dirname)));
 
 app.get('/',function(req,res){
   res.sendFile('/Views/index.html' , { root : __dirname});
