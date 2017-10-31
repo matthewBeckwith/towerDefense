@@ -10,6 +10,28 @@
       left:0;
       border:1px solid black;
     }
+
+    #UI{
+      position:absolute;
+      top:10vh;
+      left:60vw;
+      height:80vh;
+      width:20vw;
+    }
+
+    #playerInformation{
+      text-align: center;
+    }
+
+    #UI_Tower_Selection{
+      display: none;
+    }
+
+    #UI_Tower_Selection button{
+      width:125px;
+      height:30px;
+      margin-bottom:10px;
+    }
   </style>
 
   <script
@@ -21,6 +43,21 @@
 
   <canvas id="gameboard" height=600 width=600 onclick="getClick(event)"></canvas>
 
+  <div id="UI">
+    <div id="playerInformation"></div>
+    <br>
+    <div id="UI_Tower_Selection">
+      <button id="basic" onclick="placeTower('Basic')">BASIC ($20)</button>
+      <button id="basic" onclick="placeTower('Advanced')" disabled>ADVANCED ($40)</button>
+      <button id="basic" onclick="placeTower('Sniper')" disabled>SNIPER ($60)</button>
+      <button id="basic" onclick="placeTower('Bomber')" disabled>BOMBER ($100)</button>
+    </div>
+  </div>
+
+  <script src="js/Game.js"></script>
+  <script src="js/Player.js"></script>
+  <script src="js/Tower.js"></script>
+  <script src="js/Enemy.js"></script>
   <script src="js/engine.js"></script>
 </body>
 </html>
