@@ -1,59 +1,53 @@
-var canvas = document.getElementById('gameboard');
-var ctx = canvas.getContext('2d');
+var game = new Phaser.Game(1000, 600, Phaser.AUTO, '', { preload: preload, create: create, update: update });
 
-var game = new Game();
-var player = new Player();
+function preload() {
+  game.load.image('grass_bg','imgs/grass.png');
+  game.load.image('path_bg','imgs/path.png');
+  game.load.image('towerspace_bg','imgs/towerspace.png');
+  game.load.image('basicTower_btn','imgs/basicTower_btn.png');
+}
 
-var boxsize = canvas.width / game.DIFFICULTY;
-var level = initLevel(game.DIFFICULTY);
-var timer = window.setInterval(draw,game.FPS);
+var g;
+var player;
+var boxsize;
+var level;
 var spawnedTowers = [];
 var livingEnemies = [];
+var money;
+var health;
+var grass_bg, path_bg, towerspace_bg;
+var basicTower_btn;
 
-console.log(boxsize);
+function create() {
+  g = new Game();
+  player = new Player();
+  level = initLevel(g.DIFFICULTY);
+  boxsize = 600 / g.DIFFICULTY;
 
-var mouseX,mouseY;
-
-function getClick(event){
-  mouseX = Math.floor(event.offsetX / boxsize);
-  mouseY = Math.floor(event.offsetY / boxsize);
-
-  if(level[mouseY][mouseX] == 2){
-    $('#UI_Tower_Selection').fadeIn(1000);
-  }
-}
-
-function placeTower(type){
-  var temp = new Tower(type);
-  if(player.money >= temp.getCost()){
-    spawnedTowers.push([temp,mouseX,mouseY]);
-    player.money -= temp.getCost();
-    $('#UI_Tower_Selection').fadeOut(500);
-  }
-}
-
-function draw(){
-  ctx.clearRect(0,0,canvas.height,canvas.width);
+  grass_bg = game.add.tileSprite(0, 0, 600, 600, 'grass_bg');
 
   for(row in level){
     for(col in level[row]){
       if(level[row][col] == 2){
-        drawTowerSpace(col * boxsize, row * boxsize);
+        towerspace_bg = game.add.tileSprite(col * boxsize, row * boxsize, boxsize, boxsize, 'towerspace_bg');
+        towerspace_bg.inputEnabled = true;
+        towerspace_bg.input.useHandCursor = true;
+        towerspace_bg.events.onInputDown.add(pickTower,this);
+        towerspace_bg.events.onInputOver.add(highlightTowerSpace,this);
+        towerspace_bg.events.onInputOut.add(removeHighlightTowerSpace,this);
       }
       if(level[row][col] == 1){
-        drawPathSpace(col * boxsize, row * boxsize);
-      }
-      if(level[row][col] == 0){
-        drawEmptySpace(col * boxsize, row * boxsize);
+        path_bg = game.add.tileSprite(col * boxsize, row * boxsize, boxsize, boxsize, 'path_bg');
       }
     }
   }
 
-  for(tower in spawnedTowers){
-    drawTower(spawnedTowers[tower][0],spawnedTowers[tower][1] * boxsize,spawnedTowers[tower][2] * boxsize);
-  }
+  money = game.add.text(620, 10, "Money: $" + player.money, { font: "25px Arial", fill: g.TOWERSPACE_COLOR, align: "left" });
+  health = game.add.text(850, 10, "Health: " + player.health, { font: "25px Arial", fill: "#ff0044", align: "left" });
+}
 
-  $('#playerInformation').html("<h3>Money: $" + player.money + "</h3>")
+function update() {
+  showPlayerStats();
 }
 
 function initLevel(d){
@@ -145,29 +139,34 @@ function initLevel(d){
     return level;
 }
 
-function drawTower(type,x,y){
-  for(tower in spawnedTowers){
-    ctx.fillStyle = type.getColor();
-    ctx.fillRect(x,y,boxsize,boxsize);
+function showPlayerStats(){
+  money.setText("Money: $" + player.money);
+  health.setText("Health: " + player.health);
+}
+
+function showTowerChoices(){
+  basicTower_btn = game.add.button(630, 100, 'basicTower_btn', towerChose, this);
+}
+
+function highlightTowerSpace(towerspace){
+  towerspace.tint = 0x999999;
+}
+
+function removeHighlightTowerSpace(towerspace){
+  towerspace.tint = 0xffffff;
+}
+
+function pickTower(towerspace){
+  showTowerChoices();
+}
+
+function towerChose(tower){
+  switch(tower.key){
+    case 'basicTower_btn':
+      if(player.money >= 20){
+        player.money -= 20;    
+      }
+      break;
   }
-}
-
-function drawEnemy(color,x,y){
-  ctx.fillStyle = color;
-  ctx.fillRect(x,y,boxsize,boxsize);
-}
-
-function drawTowerSpace(x,y){
-  ctx.fillStyle = game.TOWERSPACE_COLOR;
-  ctx.fillRect(x,y,boxsize,boxsize);
-}
-
-function drawPathSpace(x,y){
-  ctx.fillStyle = game.PATHSPACE_COLOR;
-  ctx.fillRect(x,y,boxsize,boxsize);
-}
-
-function drawEmptySpace(x,y){
-  ctx.fillStyle = game.EMPTYSPACE_COLOR;
-  ctx.fillRect(x,y,boxsize,boxsize);
+  tower.destroy();
 }
