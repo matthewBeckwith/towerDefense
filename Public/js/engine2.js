@@ -1,27 +1,43 @@
 var game = new Phaser.Game(1000, 600, Phaser.AUTO, '', { preload: preload, create: create, update: update });
 
 function preload() {
+  //Static Map Pieces
   game.load.image('grass_bg','imgs/grass.png');
   game.load.image('path_bg','imgs/path.png');
   game.load.image('towerspace_bg','imgs/towerspace.png');
+
+  //UI Pieces
   game.load.image('basicTower_btn','imgs/basicTower_btn.png');
+  game.load.image('advancedTower_btn','imgs/basicTower_btn.png');
+  game.load.image('expertTower_btn','imgs/basicTower_btn.png');
+
+  //Enemies
+  game.load.image('enemy_basic','imgs/enemy_basic.png');
+
+  //Towers
+  game.load.image('tower_basic','imgs/tower_basic.png');
 }
 
 var g;
 var player;
 var boxsize;
-var level;
 var spawnedTowers = [];
 var livingEnemies = [];
 var money;
 var health;
 var grass_bg, path_bg, towerspace_bg;
-var basicTower_btn;
+var towerChoiceButtons = [
+  [630, 100, 'basicTower_btn', 20, true],
+  [750, 100, 'advancedTower_btn', 40, false],
+  [870, 100, 'expertTower_btn', 60, true]
+];
+var btns = [];
+var currX, currY;
 
 function create() {
   g = new Game();
   player = new Player();
-  level = initLevel(g.DIFFICULTY);
+  var level = initLevel(g.DIFFICULTY);
   boxsize = 600 / g.DIFFICULTY;
 
   grass_bg = game.add.tileSprite(0, 0, 600, 600, 'grass_bg');
@@ -42,11 +58,20 @@ function create() {
     }
   }
 
+  for(button in towerChoiceButtons){
+    var btn = game.add.button(towerChoiceButtons[button][0], towerChoiceButtons[button][1], towerChoiceButtons[button][2], towerChose, this);
+    btn.scale.setTo(0.5,0.5);
+    btn.tint = 0x222222;
+    btn.inputEnabled = false;
+    btns.push(btn);
+  }
+
   money = game.add.text(620, 10, "Money: $" + player.money, { font: "25px Arial", fill: g.TOWERSPACE_COLOR, align: "left" });
   health = game.add.text(850, 10, "Health: " + player.health, { font: "25px Arial", fill: "#ff0044", align: "left" });
 }
 
 function update() {
+  showUI();
   showPlayerStats();
 }
 
@@ -144,10 +169,6 @@ function showPlayerStats(){
   health.setText("Health: " + player.health);
 }
 
-function showTowerChoices(){
-  basicTower_btn = game.add.button(630, 100, 'basicTower_btn', towerChose, this);
-}
-
 function highlightTowerSpace(towerspace){
   towerspace.tint = 0x999999;
 }
@@ -157,16 +178,43 @@ function removeHighlightTowerSpace(towerspace){
 }
 
 function pickTower(towerspace){
-  showTowerChoices();
+  currX = towerspace.left;
+  currY = towerspace.top;
 }
 
-function towerChose(tower){
-  switch(tower.key){
+function towerChose(towerPicked){
+  switch(towerPicked.key){
     case 'basicTower_btn':
-      if(player.money >= 20){
-        player.money -= 20;    
+      if(player.money >= towerChoiceButtons[0][3]){
+        player.money -= towerChoiceButtons[0][3];
+
+        game.add.sprite(currX, currY, 'tower_basic');
+      }
+      break;
+    case 'advancedTower_btn':
+      if(player.money >= towerChoiceButtons[1][3]){
+        player.money -= towerChoiceButtons[1][3];
+
+        game.add.sprite(currX, currY, 'tower_basic');
+      }
+      break;
+    case 'expertTower_btn':
+      if(player.money >= towerChoiceButtons[2][3]){
+        player.money -= towerChoiceButtons[2][3];
+
+        game.add.sprite(currX, currY, 'tower_basic');
       }
       break;
   }
-  tower.destroy();
+}
+
+function showUI(){
+  for(btn in btns){
+    for(button in towerChoiceButtons){
+      if(towerChoiceButtons[btn][4] == true){
+        btns[btn].tint = 0xffffff;
+        btns[btn].inputEnabled = true;
+      }
+    }
+  }
 }
